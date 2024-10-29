@@ -10,10 +10,10 @@ template <typename T,
           int kernel_size,
           int dilation,
           typename Activation = RTNeural::TanhActivationT<T, channels>>
-        // TODO: gated?
+// TODO: gated?
 struct Wavenet_Layer
 {
-    RTNeural::Conv1DT<T,  channels, channels, kernel_size, dilation> conv;
+    RTNeural::Conv1DT<T, channels, channels, kernel_size, dilation> conv;
     RTNeural::DenseT<T, condition_size, channels> input_mixin; // no bias!
     RTNeural::DenseT<T, channels, channels> _1x1;
     Activation activation;
@@ -24,17 +24,18 @@ struct Wavenet_Layer
     {
         conv.reset();
 
-        std::vector<std::vector<std::vector<float>>> conv_weights (channels, std::vector<std::vector<float>>(channels, std::vector<float>(kernel_size)));
+        std::vector<std::vector<std::vector<float>>> conv_weights (channels, std::vector<std::vector<float>> (channels, std::vector<float> (kernel_size)));
         for (int i = 0; i < channels; ++i)
             for (int j = 0; j < channels; ++j)
                 for (int k = 0; k < kernel_size; k++)
                     conv_weights[i][j][k] = *(weights++);
-        conv.setWeights(conv_weights);
+        RTNeural::torch_helpers::detail::reverseKernels (conv_weights);
+        conv.setWeights (conv_weights);
 
         std::vector<float> conv_bias (channels);
         for (int i = 0; i < channels; ++i)
             conv_bias[i] = *(weights++);
-        conv.setBias(conv_bias);
+        conv.setBias (conv_bias);
 
         std::vector<std::vector<float>> input_mixin_weights (channels, std::vector<float> (condition_size));
         for (int i = 0; i < channels; i++)
@@ -50,20 +51,20 @@ struct Wavenet_Layer
 
         std::vector<float> _1x1_bias (channels);
         for (int i = 0; i < channels; i++)
-                _1x1_bias[i] = *(weights++);
+            _1x1_bias[i] = *(weights++);
         _1x1.setBias (_1x1_bias.data());
     }
 
-    void forward(const Eigen::Matrix<T, channels, 1>& ins,
-        const Eigen::Matrix<T, condition_size, 1>& condition,
-        Eigen::Matrix<T, channels, 1>& head_io)
+    void forward (const Eigen::Matrix<T, channels, 1>& ins,
+                  const Eigen::Matrix<T, condition_size, 1>& condition,
+                  Eigen::Matrix<T, channels, 1>& head_io)
     {
-        conv.forward(ins);
-        input_mixin.forward(condition);
+        conv.forward (ins);
+        input_mixin.forward (condition);
 
         outs = conv.outs + input_mixin.outs;
 
-        activation.forward(outs);
+        activation.forward (outs);
 
         head_io += outs;
 

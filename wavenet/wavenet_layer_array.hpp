@@ -15,6 +15,7 @@ struct Layer_Array
 {
     RTNeural::DenseT<T, in_size, channels> rechannel; // no bias!
     std::tuple<Wavenet_Layer<T, condition_size, channels, kernel_size, dilations>...> layers;
+    static constexpr auto num_layers = std::tuple_size_v<decltype(layers)>;
     RTNeural::DenseT<T, channels, head_size> head_rechannel; // head_bias = true
     decltype (RTNeural::DenseT<T, channels, head_size>::outs)& outs { head_rechannel.outs };
 
@@ -59,7 +60,7 @@ struct Layer_Array
             },
             layers);
 
-        head_rechannel.forward (std::get<9> (layers).outs);
+        head_rechannel.forward (std::get<num_layers - 1> (layers).outs);
     }
 };
 } // namespace wavenet
