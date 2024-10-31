@@ -11,18 +11,22 @@ struct Wavenet_Model
 {
     std::tuple<LayerArrays...> layer_arrays;
     Eigen::Matrix<T, 16, 1> head_io {};
-    const T head_scale = (T) 0.02;
+    T head_scale = (T) 0;
 
     void load_weights (const nlohmann::json& model_config, std::vector<float>& model_weights)
     {
-        auto weights_begin = model_weights.begin();
+        auto weights_iterator = model_weights.begin();
         RTNeural::modelt_detail::forEachInTuple (
-            [&weights_begin] (auto& layer, size_t)
+            [&weights_iterator] (auto& layer, size_t)
             {
-                layer.load_weights (weights_begin);
+                layer.load_weights (weights_iterator);
             },
             layer_arrays);
-        // std::cout << weights_json << std::endl;
+
+        head_scale = *weights_iterator++;
+
+        // Make sure we use the all of the weights exactly
+        assert (std::distance (model_weights.begin(), weights_iterator) == model_weights.size());
     }
 
     T forward (T input) noexcept
