@@ -57,7 +57,7 @@ struct Wavenet_Layer
 
     void forward (const Eigen::Matrix<T, channels, 1>& ins,
                   const Eigen::Matrix<T, condition_size, 1>& condition,
-                  Eigen::Matrix<T, channels, 1>& head_io)
+                  Eigen::Map<Eigen::Matrix<T, channels, 1>, RTNeural::RTNeuralEigenAlignment>& head_io)
     {
         conv.forward (ins);
         input_mixin.forward (condition);
@@ -66,7 +66,7 @@ struct Wavenet_Layer
 
         activation.forward (outs);
 
-        head_io += outs;
+        head_io.noalias() += outs;
 
         _1x1.forward (outs);
         outs = ins + _1x1.outs;
