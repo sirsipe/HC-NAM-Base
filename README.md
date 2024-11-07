@@ -23,3 +23,4 @@ cmake --build build --target RTNeural-NAM --parallel
 - Better way to handle dilations (`std::integer_sequence`)
 - Gated activations
 - Head bias
+- MathsProvider forwarding
