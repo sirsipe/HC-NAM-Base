@@ -54,7 +54,7 @@ int main()
     {
         // nam_dsp->process (input.data() + n, output_nam.data() + n, 1);
         output_rtneural[n] = rtneural_wavenet.forward (static_cast<float> (input[n]));
-        rtneural_wavenet.reset();
+        // rtneural_wavenet.reset();
     }
     end = std::chrono::high_resolution_clock::now();
     const auto duration_rtneural = std::chrono::duration_cast<std::chrono::duration<double>> (end - start).count();
