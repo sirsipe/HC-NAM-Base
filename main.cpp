@@ -41,28 +41,26 @@ int main()
     output_rtneural.resize (N, 0.0);
 
     for (size_t n = 0; n < input.size(); ++n)
-        input[n] = 0.0f; // std::sin (3.14 * static_cast<double> (n) * 0.01);
+        input[n] = std::sin (3.14 * static_cast<double> (n) * 0.01);
 
-    // auto start = std::chrono::high_resolution_clock::now();
-    // nam_dsp->process (input.data(), output_nam.data(), N);
-    // auto end = std::chrono::high_resolution_clock::now();
-    // const auto duration_nam = std::chrono::duration_cast<std::chrono::duration<double>> (end - start).count();
-    // std::cout << "NAM: " << duration_nam << std::endl;
+    auto start = std::chrono::high_resolution_clock::now();
+    nam_dsp->process (input.data(), output_nam.data(), N);
+    auto end = std::chrono::high_resolution_clock::now();
+    const auto duration_nam = std::chrono::duration_cast<std::chrono::duration<double>> (end - start).count();
+    std::cout << "NAM: " << duration_nam << std::endl;
 
-    // start = std::chrono::high_resolution_clock::now();
-    std::cout << "---\n";
+    start = std::chrono::high_resolution_clock::now();
     for (size_t n = 0; n < input.size(); ++n)
     {
-        nam_dsp->process (input.data() + n, output_nam.data() + n, 1);
-        std::cout << "---\n";
+        // nam_dsp->process (input.data() + n, output_nam.data() + n, 1);
         output_rtneural[n] = rtneural_wavenet.forward (static_cast<float> (input[n]));
-        std::cout << "---\n";
+        rtneural_wavenet.reset();
     }
-    // end = std::chrono::high_resolution_clock::now();
-    // const auto duration_rtneural = std::chrono::duration_cast<std::chrono::duration<double>> (end - start).count();
-    // std::cout << "RTNeural: " << duration_rtneural << std::endl;
-    //
-    // std::cout << "RTNeural is: " << duration_nam / duration_rtneural << "x faster" << std::endl;
+    end = std::chrono::high_resolution_clock::now();
+    const auto duration_rtneural = std::chrono::duration_cast<std::chrono::duration<double>> (end - start).count();
+    std::cout << "RTNeural: " << duration_rtneural << std::endl;
+
+    std::cout << "RTNeural is: " << duration_nam / duration_rtneural << "x faster" << std::endl;
 
     return 0;
 }

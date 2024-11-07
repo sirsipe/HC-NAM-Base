@@ -67,19 +67,15 @@ struct Wavenet_Layer
     {
         conv.forward (ins);
         input_mixin.forward (condition);
-        std::cout << conv.outs.transpose() << std::endl;
 
         outs = conv.outs + input_mixin.outs;
-        std::cout << outs.transpose() << std::endl;
 
         activation.forward (outs);
-        std::cout << activation.outs.transpose() << std::endl;
 
         head_io.noalias() += activation.outs;
 
         _1x1.forward (activation.outs);
         outs = ins + _1x1.outs;
-        std::cout << outs.transpose() << std::endl;
     }
 };
 } // namespace wavenet

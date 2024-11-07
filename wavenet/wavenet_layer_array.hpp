@@ -63,7 +63,6 @@ struct Layer_Array
                   Eigen::Map<Eigen::Matrix<T, channels, 1>, RTNeural::RTNeuralEigenAlignment>& head_io)
     {
         rechannel.forward (ins);
-        std::cout << rechannel.outs.transpose() << std::endl;
 
         RTNeural::modelt_detail::forEachInTuple (
             [&] (auto& layer, auto index_t)
@@ -77,7 +76,6 @@ struct Layer_Array
             layers);
 
         head_rechannel.forward (head_io);
-        std::cout << layer_outputs.transpose() << std::endl;
     }
 };
 } // namespace wavenet
