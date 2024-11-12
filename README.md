@@ -9,8 +9,7 @@ using [RTNeural](https://github.com/jatinchowdhury18/RTNeural).
 # Clone repo and dependencies
 git clone https://github.com/jatinchowdhury18/RTNeural-NAM
 cd RTNeural-NAM
-git clone https://github.com/jatinchowdhury18/RTNeural
-git clone https://github.com/sdatkinson/NeuralAmpModelerCore
+git submodule update --init --recursive
 
 # Configure and build with CMake
 cmake -Bbuild -G<generator>
@@ -21,3 +20,4 @@ cmake --build build --target RTNeural-NAM --parallel
 - Optimize
 - Gated activations
 - XSIMD backend
+- More comprehensive performance comparison
