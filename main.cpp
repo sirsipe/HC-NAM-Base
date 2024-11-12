@@ -65,5 +65,14 @@ int main()
 
     std::cout << "RTNeural is: " << duration_nam / duration_rtneural << "x faster" << std::endl;
 
+    float error_sq_accum = 0.0f;
+    for (size_t n = 0; n < input.size(); ++n)
+    {
+        const auto err = output_nam[n] - output_rtneural[n];
+        error_sq_accum += err * err;
+    }
+    const auto rms_error = std::sqrt (error_sq_accum / static_cast<float> (input.size()));
+    std::cout << "RMS error: " << rms_error << std::endl;
+
     return 0;
 }
