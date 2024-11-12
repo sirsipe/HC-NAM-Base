@@ -18,7 +18,6 @@ cmake --build build --target RTNeural-NAM --parallel
 ```
 
 ## TODO:
-- Implement "prewarming" for RTNeural impl.
 - Dense layer with no bias
 - Better way to handle dilations (`std::integer_sequence`)
 - Optimize

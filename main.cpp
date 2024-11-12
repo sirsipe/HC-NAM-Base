@@ -30,6 +30,7 @@ int main()
     rtneural_wavenet.load_weights (model_data.config, model_data.weights);
 
     nam_dsp->prewarm();
+    rtneural_wavenet.prewarm();
     std::cout << std::endl;
 
     static constexpr size_t N = 2048;

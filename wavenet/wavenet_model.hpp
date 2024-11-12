@@ -13,19 +13,18 @@ struct Wavenet_Model
     Eigen::Matrix<T, 16, 1> head_input {};
     T head_scale = (T) 0;
 
-    Wavenet_Model()
-    {
-        reset();
-    }
+    Wavenet_Model() = default;
 
-    void reset()
+    void prewarm()
     {
         RTNeural::modelt_detail::forEachInTuple (
-                    [] (auto& layer, size_t)
-                    {
-                        layer.reset();
-                    },
-                    layer_arrays);
+            [] (auto& layer, size_t)
+            {
+                layer.reset();
+            },
+            layer_arrays);
+        for (int i = 0; i < 1 << 14; ++i)
+            forward (0.0f);
     }
 
     void load_weights (const nlohmann::json& model_config, std::vector<float>& model_weights)
