@@ -24,10 +24,11 @@ int main()
     nam::dspData model_data;
     auto nam_dsp = nam::get_dsp (model_path, model_data);
 
+    using Dilations = wavenet::Dilations<1, 2, 4, 8, 16, 32, 64, 128, 256, 512>;
     wavenet::Wavenet_Model<float,
                            1,
-                           wavenet::Layer_Array<float, 1, 1, 8, 16, 3, false, NAMMathsProvider, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512>,
-                           wavenet::Layer_Array<float, 16, 1, 1, 8, 3, true, NAMMathsProvider, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512>>
+                           wavenet::Layer_Array<float, 1, 1, 8, 16, 3, Dilations, false, NAMMathsProvider>,
+                           wavenet::Layer_Array<float, 16, 1, 1, 8, 3, Dilations, true, NAMMathsProvider>>
         rtneural_wavenet;
     rtneural_wavenet.load_weights (model_data.config, model_data.weights);
 

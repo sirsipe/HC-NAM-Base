@@ -4,24 +4,42 @@
 
 namespace wavenet
 {
+template <int... values>
+using Dilations = std::integer_sequence<int, values...>;
+
 template <typename T,
           int in_size,
           int condition_size,
           int head_size,
           int channels,
           int kernel_size,
+          typename DilationsSequence,
           bool has_head_bias,
-          typename MathsProvider,
-          int... dilations>
+          typename MathsProvider>
 struct Layer_Array
 {
+    template <typename>
+    struct Layers_Helper
+    {
+    };
+
+    template <int... dilation_vals>
+    struct Layers_Helper<Dilations<dilation_vals...>>
+    {
+        using type = std::tuple<Wavenet_Layer<T, condition_size, channels, kernel_size, dilation_vals, MathsProvider>...>;
+    };
+
+    using Layers = typename Layers_Helper<DilationsSequence>::type;
+
+    static constexpr auto n_channels = channels;
+
     RTNeural::DenseT<T, in_size, channels> rechannel; // no bias!
-    std::tuple<Wavenet_Layer<T, condition_size, channels, kernel_size, dilations, MathsProvider>...> layers;
-    static constexpr auto num_layers = std::tuple_size_v<decltype(layers)>;
+    Layers layers;
+    static constexpr auto num_layers = std::tuple_size_v<decltype (layers)>;
     RTNeural::DenseT<T, channels, head_size> head_rechannel; // head_bias = true
 
-    using Last_Layer_Type = std::remove_reference_t<decltype(std::get<std::tuple_size_v<decltype (layers)> - 1>(layers))>;
-    decltype (Last_Layer_Type::outs)& layer_outputs { std::get<std::tuple_size_v<decltype (layers)> - 1>(layers).outs };
+    using Last_Layer_Type = std::remove_reference_t<decltype (std::get<std::tuple_size_v<decltype (layers)> - 1> (layers))>;
+    decltype (Last_Layer_Type::outs)& layer_outputs { std::get<std::tuple_size_v<decltype (layers)> - 1> (layers).outs };
     decltype (RTNeural::DenseT<T, channels, head_size>::outs)& head_outputs { head_rechannel.outs };
 
     void reset()

@@ -19,7 +19,6 @@ cmake --build build --target RTNeural-NAM --parallel
 
 ## TODO: 
 - Dense layer with no bias
-- Better way to handle dilations (`std::integer_sequence`)
 - Optimize
 - Gated activations
 - XSIMD backend
