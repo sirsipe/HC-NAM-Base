@@ -36,7 +36,7 @@ struct Layer_Array
     RTNeural::DenseT<T, in_size, channels> rechannel; // no bias!
     Layers layers;
     static constexpr auto num_layers = std::tuple_size_v<decltype (layers)>;
-    RTNeural::DenseT<T, channels, head_size> head_rechannel; // head_bias = true
+    RTNeural::DenseT<T, channels, head_size, has_head_bias> head_rechannel;
 
     using Last_Layer_Type = std::remove_reference_t<decltype (std::get<std::tuple_size_v<decltype (layers)> - 1> (layers))>;
     decltype (Last_Layer_Type::outs)& layer_outputs { std::get<std::tuple_size_v<decltype (layers)> - 1> (layers).outs };

@@ -17,8 +17,7 @@ cmake -Bbuild -G<generator>
 cmake --build build --target RTNeural-NAM --parallel
 ```
 
-## TODO: 
-- Dense layer with no bias
+## TODO:
 - Optimize
 - Gated activations
 - XSIMD backend

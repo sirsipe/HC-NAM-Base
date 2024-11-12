@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(deps/RTNeural)
 add_subdirectory(deps/NeuralAmpModelerCore)
+add_subdirectory(deps/math_approx)
 
 add_executable(RTNeural_NAM)
 target_sources(RTNeural_NAM
@@ -31,4 +32,5 @@ target_include_directories(RTNeural_NAM
 target_link_libraries(RTNeural_NAM
     PRIVATE
         RTNeural
+        math_approx
 )

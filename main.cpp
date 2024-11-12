@@ -1,5 +1,6 @@
 #include <NAM/dsp.h>
 #include <RTNeural/RTNeural.h>
+#include <math_approx/math_approx.hpp>
 #include <iostream>
 
 #include "wavenet/wavenet_model.hpp"
@@ -9,7 +10,9 @@ struct NAMMathsProvider
     template <typename Matrix>
     static auto tanh(const Matrix& x)
     {
-        return x.unaryExpr([] (auto x) { return std::tanh (x); });
+        // See: math_approx::tanh<3>
+        const auto x_poly = x.array() * (1.0f + 0.183428244899f * x.array().square());
+        return x_poly.array() * (x_poly.array().square() + 1.0f).array().rsqrt();
     }
 };
 
@@ -38,14 +41,14 @@ int main()
 
     static constexpr size_t N = 2048;
     std::vector<float> input;
-    input.resize (N, 0.0);
+    input.resize (N, 0.0f);
     std::vector<float> output_nam;
-    output_nam.resize (N, 0.0);
+    output_nam.resize (N, 0.0f);
     std::vector<float> output_rtneural;
-    output_rtneural.resize (N, 0.0);
+    output_rtneural.resize (N, 0.0f);
 
     for (size_t n = 0; n < input.size(); ++n)
-        input[n] = std::sin (3.14 * static_cast<float> (n) * 0.01);
+        input[n] = std::sin (3.14f * static_cast<float> (n) * 0.01f);
 
     auto start = std::chrono::high_resolution_clock::now();
     nam_dsp->process (input.data(), output_nam.data(), N);

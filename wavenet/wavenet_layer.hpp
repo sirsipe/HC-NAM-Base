@@ -15,7 +15,7 @@ template <typename T,
 struct Wavenet_Layer
 {
     RTNeural::Conv1DT<T, channels, channels, kernel_size, dilation> conv;
-    RTNeural::DenseT<T, condition_size, channels> input_mixin; // no bias!
+    RTNeural::DenseT<T, condition_size, channels, false> input_mixin;
     RTNeural::DenseT<T, channels, channels> _1x1;
     Activation activation;
 
