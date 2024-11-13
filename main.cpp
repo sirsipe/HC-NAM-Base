@@ -61,8 +61,7 @@ void test_ob1_model()
     const auto model_path { std::string { ROOT_DIR } + "OB1 Mesa DC-5 PM.nam" };
     std::cout << "Testing model: " << model_path << std::endl;
 
-    nam::dspData model_data;
-    auto nam_dsp = nam::get_dsp (model_path, model_data);
+    auto nam_dsp = nam::get_dsp (model_path);
 
     using Dilations = wavenet::Dilations<1, 2, 4, 8, 16, 32, 64, 128, 256, 512>;
     wavenet::Wavenet_Model<float,

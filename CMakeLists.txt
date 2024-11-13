@@ -35,3 +35,7 @@ target_link_libraries(RTNeural_NAM
         RTNeural
         math_approx
 )
+
+if(CONFIGURE_PLUGIN)
+    add_subdirectory(plugin)
+endif()
