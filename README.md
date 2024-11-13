@@ -17,6 +17,5 @@ cmake --build build --target RTNeural-NAM --parallel
 ```
 
 ## TODO:
-- Optimize
+- More optimizations
 - Gated activations
-- More comprehensive performance comparison
