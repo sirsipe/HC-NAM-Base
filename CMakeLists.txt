@@ -28,6 +28,7 @@ target_compile_definitions(RTNeural_NAM
 target_include_directories(RTNeural_NAM
     PRIVATE
         deps/NeuralAmpModelerCore
+        deps/RTNeural/modules/Eigen
 )
 target_link_libraries(RTNeural_NAM
     PRIVATE

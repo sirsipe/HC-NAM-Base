@@ -67,7 +67,7 @@ struct Layer_Array
                 head_rechannel_weights[i][j] = *(weights++);
         head_rechannel.setWeights (head_rechannel_weights);
 
-        if (has_head_bias)
+        if constexpr (has_head_bias)
         {
             std::vector<float> head_rechannel_bias (head_size);
             for (int i = 0; i < head_size; i++)
@@ -76,9 +76,15 @@ struct Layer_Array
         }
     }
 
+#if RTNEURAL_USE_EIGEN
     void forward (const Eigen::Matrix<T, in_size, 1>& ins,
                   const Eigen::Matrix<T, condition_size, 1>& condition,
                   Eigen::Map<Eigen::Matrix<T, channels, 1>, RTNeural::RTNeuralEigenAlignment>& head_io)
+#elif RTNEURAL_USE_XSIMD
+    void forward (const xsimd::batch<T> (&ins)[RTNeural::ceil_div (in_size, (int) xsimd::batch<T>::size)],
+                  const xsimd::batch<T> (&condition)[RTNeural::ceil_div (condition_size, (int) xsimd::batch<T>::size)],
+                  xsimd::batch<T> (&head_io)[RTNeural::ceil_div (channels, (int) xsimd::batch<T>::size)])
+#endif
     {
         rechannel.forward (ins);
 

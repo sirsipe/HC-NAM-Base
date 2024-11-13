@@ -1,19 +1,27 @@
 #include <NAM/dsp.h>
 #include <RTNeural/RTNeural.h>
-#include <math_approx/math_approx.hpp>
 #include <iostream>
+#include <math_approx/math_approx.hpp>
 
 #include "wavenet/wavenet_model.hpp"
 
 struct NAMMathsProvider
 {
+#if RTNEURAL_USE_EIGEN
     template <typename Matrix>
-    static auto tanh(const Matrix& x)
+    static auto tanh (const Matrix& x)
     {
         // See: math_approx::tanh<3>
         const auto x_poly = x.array() * (1.0f + 0.183428244899f * x.array().square());
         return x_poly.array() * (x_poly.array().square() + 1.0f).array().rsqrt();
     }
+#elif RTNEURAL_USE_XSIMD
+    template <typename T>
+    static T tanh (T x)
+    {
+        return math_approx::tanh<3> (x);
+    }
+#endif
 };
 
 int main()
@@ -58,6 +66,7 @@ int main()
 
     start = std::chrono::high_resolution_clock::now();
     for (size_t n = 0; n < input.size(); ++n)
+    // for (size_t n = 0; n < 1; ++n)
     {
         // nam_dsp->process (input.data() + n, output_nam.data() + n, 1);
         output_rtneural[n] = rtneural_wavenet.forward (input[n]);

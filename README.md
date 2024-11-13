@@ -19,5 +19,4 @@ cmake --build build --target RTNeural-NAM --parallel
 ## TODO:
 - Optimize
 - Gated activations
-- XSIMD backend
 - More comprehensive performance comparison

@@ -19,7 +19,11 @@ struct Wavenet_Layer
     RTNeural::DenseT<T, channels, channels> _1x1;
     Activation activation;
 
+#if RTNEURAL_USE_EIGEN
     Eigen::Matrix<T, channels, 1> outs;
+#elif RTNEURAL_USE_XSIMD
+    xsimd::batch<T> outs[RTNeural::ceil_div (channels, (int) xsimd::batch<T>::size)];
+#endif
 
     void reset()
     {
@@ -61,21 +65,43 @@ struct Wavenet_Layer
         _1x1.setBias (_1x1_bias.data());
     }
 
+#if RTNEURAL_USE_EIGEN
     void forward (const Eigen::Matrix<T, channels, 1>& ins,
                   const Eigen::Matrix<T, condition_size, 1>& condition,
                   Eigen::Map<Eigen::Matrix<T, channels, 1>, RTNeural::RTNeuralEigenAlignment>& head_io)
+#elif RTNEURAL_USE_XSIMD
+    void forward (const xsimd::batch<T> (&ins)[RTNeural::ceil_div (channels, (int) xsimd::batch<T>::size)],
+                  const xsimd::batch<T> (&condition)[RTNeural::ceil_div (condition_size, (int) xsimd::batch<T>::size)],
+                  xsimd::batch<T> (&head_io)[RTNeural::ceil_div (channels, (int) xsimd::batch<T>::size)])
+#endif
     {
         conv.forward (ins);
         input_mixin.forward (condition);
 
+#if RTNEURAL_USE_EIGEN
         outs = conv.outs + input_mixin.outs;
+#elif RTNEURAL_USE_XSIMD
+        for (int i = 0; i < std::size (outs); ++i)
+            outs[i] = conv.outs[i] + input_mixin.outs[i];
+#endif
 
         activation.forward (outs);
 
+#if RTNEURAL_USE_EIGEN
         head_io.noalias() += activation.outs;
+#elif RTNEURAL_USE_XSIMD
+        for (int i = 0; i < std::size (head_io); ++i)
+            head_io[i] += activation.outs[i];
+#endif
 
         _1x1.forward (activation.outs);
+
+#if RTNEURAL_USE_EIGEN
         outs = ins + _1x1.outs;
+#elif RTNEURAL_USE_XSIMD
+        for (int i = 0; i < std::size (outs); ++i)
+            outs[i] = ins[i] + _1x1.outs[i];
+#endif
     }
 };
 } // namespace wavenet
