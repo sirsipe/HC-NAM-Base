@@ -8,7 +8,7 @@ def generate_header(data, output_file):
         f.write("#pragma once\n\n")
         f.write("#include <array>\n")
         f.write("#include \"NAMMathsProvider.hpp\"\n")
-        f.write("#include \"wavenet/wavenet_model.hpp\"\n\n")
+        f.write("#include \"../wavenet/wavenet_model.hpp\"\n\n")
         
         f.write("namespace HCNAMBase {\n\n")
         
