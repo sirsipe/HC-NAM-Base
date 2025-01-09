@@ -1,21 +1,5 @@
-# RTNeural-NAM
+# HC-NAM-Base
 
-Implementation of a [Neural Amp Modeler](https://github.com/sdatkinson/NeuralAmpModelerCore)-style Wavenet
-using [RTNeural](https://github.com/jatinchowdhury18/RTNeural).
+This is an attempt to modify [RTNeural-NAM](https://github.com/jatinchowdhury18/RTNeural-NAM) to accept hard-coded constants as weights,
+to allow highly optimized, pre-built NAM Inference models.
 
-## Setup
-
-```bash
-# Clone repo and dependencies
-git clone https://github.com/jatinchowdhury18/RTNeural-NAM
-cd RTNeural-NAM
-git submodule update --init --recursive
-
-# Configure and build with CMake
-cmake -Bbuild -G<generator>
-cmake --build build --target RTNeural-NAM --parallel
-```
-
-## TODO:
-- More optimizations
-- Gated activations
