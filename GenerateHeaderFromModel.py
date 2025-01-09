@@ -50,7 +50,7 @@ def generate_header(data, output_file):
         #f.write("};\n\n")
 
         # Write weights
-        f.write(f"constexpr std::array<float, {len(weights)}> WEIGHTS = {{\n")
+        f.write(f"constexpr const std::array<const float, {len(weights)}> WEIGHTS = {{\n")
         for weight in weights:
             f.write(f"    {weight},\n")
         f.write("};\n\n")
