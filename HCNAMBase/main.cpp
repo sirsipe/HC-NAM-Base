@@ -7,7 +7,9 @@ namespace HCNAMBase
 
     void Load() // Temporary
     {
-        //zmoModel.load_weights
+        std::vector<float> weightsVetor(HCNAMBase::WEIGHTS.cbegin(), HCNAMBase::WEIGHTS.cbegin());
+
+        zmoModel.load_weights(weightsVetor.begin());
     }
 
     void Reset(int sample_count)

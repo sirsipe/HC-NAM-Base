@@ -56,10 +56,10 @@ struct Wavenet_Model
             forward (0.0f);
     }
 
-    void load_weights (const nlohmann::json& model_json)
+    void load_weights (std::vector<float>::iterator weights_iterator)
     {
-        std::vector<float> model_weights = model_json.at ("weights");
-        auto weights_iterator = model_weights.begin();
+        //std::vector<float> model_weights = model_json.at ("weights");
+        //auto weights_iterator = model_weights.begin();
         RTNeural::modelt_detail::forEachInTuple (
             [&weights_iterator] (auto& layer, size_t)
             {
