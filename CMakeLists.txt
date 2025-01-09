@@ -1,41 +1,26 @@
-cmake_minimum_required(VERSION 3.29)
-project(RTNeural_NAM)
+cmake_minimum_required(VERSION 3.10)
+project(HCNAMBase)
 
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(deps/RTNeural)
-add_subdirectory(deps/NeuralAmpModelerCore)
-add_subdirectory(deps/math_approx)
 
-add_executable(RTNeural_NAM)
-target_sources(RTNeural_NAM
+add_library(HCNAMBase SHARED)
+target_sources(HCNAMBase
     PRIVATE
-        main.cpp
-        deps/NeuralAmpModelerCore/NAM/activations.cpp
-        deps/NeuralAmpModelerCore/NAM/convnet.cpp
-        deps/NeuralAmpModelerCore/NAM/dsp.cpp
-        deps/NeuralAmpModelerCore/NAM/get_dsp.cpp
-        deps/NeuralAmpModelerCore/NAM/lstm.cpp
-        deps/NeuralAmpModelerCore/NAM/util.cpp
-        deps/NeuralAmpModelerCore/NAM/wavenet.cpp
+        HCNAMBase/main.cpp
 )
-target_compile_definitions(RTNeural_NAM
+target_compile_definitions(HCNAMBase
     PRIVATE
-        ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}/"
-        NAM_SAMPLE_FLOAT=1
+        RTNEURAL_USE_EIGEN=1
 )
 
-target_include_directories(RTNeural_NAM
+target_include_directories(HCNAMBase
     PRIVATE
-        deps/NeuralAmpModelerCore
         deps/RTNeural/modules/Eigen
 )
-target_link_libraries(RTNeural_NAM
+
+target_link_libraries(HCNAMBase
     PRIVATE
         RTNeural
-        math_approx
 )
-
-if(CONFIGURE_PLUGIN)
-    add_subdirectory(plugin)
-endif()
